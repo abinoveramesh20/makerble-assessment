@@ -1,31 +1,47 @@
 pipeline {
     agent any
-    
+
     stages {
+        stage('Checkout') {
+            steps {
+                // Checkout your code repository
+                git 'https://github.com/abinoveramesh20/makerble-assessment.git'
+            }
+        }
+
         stage('Build') {
             steps {
+                // Build the Docker images
                 script {
-                    // Check out the code from your repository
-                    git 'https://github.com/abinoveramesh20/makerble-assessment.git' 
-                    // Build the Docker image
-                    sh 'docker-compose build'
+                    docker.build('my-budget-app-image')
                 }
             }
         }
-        stage('Test') {
+
+        stage('Run Tests') {
             steps {
-                script {
-                    // Run tests if you have any
-                    sh 'docker-compose run app rails test'
-                }
+                // Run any tests if applicable
+                // Example: docker.image('my-budget-app-image').inside {
+                //     sh 'npm test' or any test command
+                // }
             }
         }
+
         stage('Deploy') {
             steps {
+                // Deploy the application using Docker Compose
                 script {
-                    // Deploy the app using Docker Compose
                     sh 'docker-compose up -d'
                 }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Clean up after the pipeline run (optional)
+            script {
+                sh 'docker-compose down'
             }
         }
     }
