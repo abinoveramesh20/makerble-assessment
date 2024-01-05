@@ -4,14 +4,12 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Checkout your code repository
-                git 'https://github.com/abinoveramesh20/makerble-assessment.git'
+                git branch: 'main', url: 'https://github.com/abinoveramesh20/makerble-assessment.git'
             }
         }
 
         stage('Build') {
             steps {
-                // Build the Docker images
                 script {
                     docker.build('my-budget-app-image')
                 }
@@ -20,16 +18,12 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                // Run any tests if applicable
-                // Example: docker.image('my-budget-app-image').inside {
-                //     sh 'npm test' or any test command
-                // }
+                // Run tests if applicable
             }
         }
 
         stage('Deploy') {
             steps {
-                // Deploy the application using Docker Compose
                 script {
                     sh 'docker-compose up -d'
                 }
@@ -39,7 +33,6 @@ pipeline {
 
     post {
         always {
-            // Clean up after the pipeline run (optional)
             script {
                 sh 'docker-compose down'
             }
