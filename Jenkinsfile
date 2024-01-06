@@ -1,18 +1,28 @@
 pipeline {
-    agent any
-
+    agent {
+        docker {
+            image 'ruby:3.1.2'
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
+        }
+    }
     stages {
-        stage('Example Stage') {
+        stage('Install Dependencies') {
             steps {
-                // Actions to be performed in this stage
-                // For example:
-                sh 'echo "Hello, Jenkins!"'
-                // More steps here...
+                sh 'apt-get update -qq && apt-get install -y build-essential nodejs'
             }
         }
-        // Define more stages if needed
+        stage('Setup and Build') {
+            steps {
+                dir('app') {
+                    sh 'bundle install'
+                }
+                sh 'cp -r * /app' // Copy files to app directory
+            }
+        }
+        stage('Expose Port') {
+            steps {
+                sh 'docker run -p 3000:3000 ruby:3.1.2 rails server -b 0.0.0.0'
+            }
+        }
     }
-
-    // Post actions or additional configurations can be added here
 }
-
