@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'ruby:3.1.2'
-            args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
     stages {
@@ -14,16 +14,18 @@ pipeline {
         stage('Setup and Build') {
             steps {
                 dir('app') {
+                    // Install dependencies within the app directory
                     sh 'bundle install'
+                    // Copy the rest of the files to the app directory
+                    sh 'cp -r $WORKSPACE/* .'
                 }
-                sh 'cp -r * /app' // Copy files to app directory
             }
         }
         stage('Expose Port') {
             steps {
-                script {
-                    // Running Docker commands within a Docker container
-                    sh 'docker run -p 3000:3000 ruby:3.1.2 rails server -b 0.0.0.0 &'
+                dir('app') {
+                    // Start the Rails server within the app directory
+                    sh 'rails server -b 0.0.0.0'
                 }
             }
         }
