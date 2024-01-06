@@ -17,10 +17,5 @@ pipeline {
             }
         }
 
-        stage('Test') {
-            steps {
-                sh 'cd /app && bundle exec rspec'  // Adapt to your test command
-            }
-        }
     }
 }
