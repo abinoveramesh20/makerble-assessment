@@ -2,40 +2,17 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
+        stage('Example Stage') {
             steps {
-                git branch: 'main', url: 'https://github.com/abinoveramesh20/makerble-assessment.git'
+                // Actions to be performed in this stage
+                // For example:
+                sh 'echo "Hello, Jenkins!"'
+                // More steps here...
             }
         }
-
-        stage('Build') {
-            steps {
-                script {
-                    docker.build('my-budget-app-image')
-                }
-            }
-        }
-
-        stage('Run Tests') {
-            steps {
-                // Run tests if applicable
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                script {
-                    sh 'docker-compose up -d'
-                }
-            }
-        }
+        // Define more stages if needed
     }
 
-    post {
-        always {
-            script {
-                sh 'docker-compose down'
-            }
-        }
-    }
+    // Post actions or additional configurations can be added here
 }
+
