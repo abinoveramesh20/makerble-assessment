@@ -22,7 +22,7 @@ pipeline {
         script {
             sh 'curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.29.0/bin/linux/amd64/kubectl'
             sh 'chmod +x kubectl'
-            sh 'mv kubectl /path/to/jenkins/workspace/'
+            sh 'mv kubectl /var/lib/jenkins/workspace/makerble/'
         }
     }
 }
