@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'ruby:3.1.2'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
+            args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
     stages {
@@ -21,7 +21,10 @@ pipeline {
         }
         stage('Expose Port') {
             steps {
-                sh 'docker run -p 3000:3000 ruby:3.1.2 rails server -b 0.0.0.0'
+                script {
+                    // Running Docker commands within a Docker container
+                    sh 'docker run -p 3000:3000 ruby:3.1.2 rails server -b 0.0.0.0 &'
+                }
             }
         }
     }
