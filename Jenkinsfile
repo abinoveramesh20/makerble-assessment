@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Install Dependencies') {
             steps {
-                sh 'apt-get update -qq && apt-get install -y build-essential nodejs'
+                sh 'apt-get update -qq && apt-get install -y \build-essential\nodejs'
             }
         }
         stage('Setup and Build') {
