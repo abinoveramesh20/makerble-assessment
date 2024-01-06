@@ -29,6 +29,7 @@ pipeline {
 
   stage('Deploy to Kubernetes') {
             steps {
+        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                 script {
                     // Your kubectl apply commands for deploying YAML files
                     sh 'kubectl apply -f namespace.yaml'
@@ -36,6 +37,7 @@ pipeline {
                     sh 'kubectl apply -f budget-app-deployment.yaml'
                     sh 'kubectl apply -f ingress.yaml'
                 }
+            }
             }
   }
   }
