@@ -1,39 +1,26 @@
 pipeline {
-    agent any
-
-    stages {
-        stage('Setup') {
-            steps {
-                // Install required packages
-                sh 'apt-get update -qq && apt-get install -y build-essential nodejs'
-            }
-        }
-
-        stage('Build') {
-            steps {
-                // Set up the working directory
-                dir('app') {
-                    // Install dependencies
-                    sh 'bundle install'
-                    // Copy all files to the app directory
-                    sh 'cp -r $WORKSPACE/* .'
-                }
-            }
-        }
-
-        stage('Run Server') {
-            steps {
-                // Start the Rails server
-                dir('app') {
-                    sh 'rails server -b 0.0.0.0 &'
-                }
-            }
+    agent {
+        docker {
+            image 'ruby:3.1.2'  // Use the specified Ruby image
+            args '-u root'      // Run as root to avoid permission issues
         }
     }
 
-    post {
-        always {
-            // Cleanup or any post-processing steps can be added here
+    stages {
+        stage('Build') {
+            steps {
+                sh 'apt-get update -qq && apt-get install -y build-essential nodejs'
+                sh 'mkdir /app'
+                copyRecursive('Gemfile', 'Gemfile.lock', '/app/')  // Copy Gemfiles
+                sh 'cd /app && bundle install'
+                copyRecursive('.', '/app/')  // Copy all other project files
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'cd /app && bundle exec rspec'  // Adapt to your test command
+            }
         }
     }
 }
