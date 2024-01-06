@@ -18,4 +18,15 @@ pipeline {
         }
 
     }
+  stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    // Your kubectl apply commands for deploying YAML files
+                    sh 'kubectl apply -f namespace.yaml'
+                    sh 'kubectl apply -f postgres-statefulset.yaml'
+                    sh 'kubectl apply -f budget-app-deployment.yaml'
+                    sh 'kubectl apply -f ingress.yaml'
+                }
+            }
+
 }
