@@ -1,8 +1,8 @@
 pipeline {
     agent {
         docker {
-            image 'ruby:3.1.2'  // Use the specified Ruby image
-            args '-u root'      // Run as root to avoid permission issues
+            image 'ruby:3.1.2'
+            args '-u root'
         }
     }
 
@@ -11,9 +11,9 @@ pipeline {
             steps {
                 sh 'apt-get update -qq && apt-get install -y build-essential nodejs'
                 sh 'mkdir /app'
-                copyRecursive('Gemfile', 'Gemfile.lock', '/app/')  // Copy Gemfiles
+                sh 'cp Gemfile Gemfile.lock /app/'  // Copy Gemfiles
                 sh 'cd /app && bundle install'
-                copyRecursive('.', '/app/')  // Copy all other project files
+                sh 'cp -r * /app/'  // Copy all other project files
             }
         }
 
